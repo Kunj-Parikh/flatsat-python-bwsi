@@ -22,9 +22,9 @@ from git import Repo
 from picamera2 import Picamera2
 
 #VARIABLES
-THRESHOLD = 0      #Any desired value from the accelerometer
-REPO_PATH = ""     #Your github repo path: ex. /home/pi/FlatSatChallenge
-FOLDER_PATH = ""   #Your image folder path in your GitHub repo: ex. /Images
+THRESHOLD = 11      #Any desired value from the accelerometer
+REPO_PATH = "/home/knightsat/Desktop/FlatSAT_Git/flatsat-python-bwsi"     #Your github repo path: ex. /home/pi/FlatSatChallenge
+FOLDER_PATH = "/images"   #Your image folder path in your GitHub repo: ex. /Images
 
 #imu and camera initialization
 i2c = board.I2C()
@@ -66,19 +66,27 @@ def img_gen(name):
 
 def take_photo():
     """
-    This function is NOT complete. Takes a photo when the FlatSat is shaken.
-    Replace psuedocode with your own code.
+    This function is complete. Takes a photo when the FlatSat is shaken.
     """
+    picam2.configure(picam2.create_still_configuration())
+    picam2.start()
+    time.sleep(2)
+    print("Waiting for shake")
     while True:
         accelx, accely, accelz = accel_gyro.acceleration
-
-        #CHECKS IF READINGS ARE ABOVE THRESHOLD
-            #PAUSE
-            #name = ""     #First Name, Last Initial  ex. MasonM
-            #TAKE PHOTO
-            #PUSH PHOTO TO GITHUB
+        if(abs(accelx)>THRESHOLD or abs(accely)>THRESHOLD or abs(accelz)>THRESHOLD):
+            print("Shaking detected")
+            time.sleep(0.5)
+            name="VivaanJ"
+            img_path=img_gen(name)
+            print(f"Taking photo: {img_path}")
+            picam2.capture_file(img_path)
+            print("Photo Saved")
+            
+            
+            time.sleep(2.4)
+        time.sleep(0.1)
         
-        #PAUSE
 
 
 def main():
